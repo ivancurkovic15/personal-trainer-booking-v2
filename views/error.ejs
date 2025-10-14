@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Personal Trainer Booking</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #4CAF50, #2196F3); 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .container { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            width: 100%; 
+            max-width: 500px; 
+            text-align: center;
+        }
+        h1 { 
+            color: #dc3545; 
+            margin-bottom: 20px; 
+            font-size: 2em;
+        }
+        .error-message { 
+            color: #333; 
+            margin-bottom: 30px; 
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+        .btn { 
+            display: inline-block;
+            padding: 12px 24px; 
+            background: #4CAF50; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            margin: 0 10px;
+        }
+        .btn:hover { 
+            background: #45a049; 
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Oops! Something went wrong</h1>
+        <div class="error-message">
+            <%= error || 'An unexpected error occurred' %>
+        </div>
+        <a href="/" class="btn">Go Home</a>
+        <a href="/login" class="btn btn-secondary">Login</a>
+    </div>
+</body>
+</html>
