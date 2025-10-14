@@ -394,9 +394,19 @@ app.post('/reset-password', async (req, res) => {
 });
 
 // Logout
+// Logout
 app.get('/logout', (req, res) => {
-  res.clearCookie('token');
-  res.redirect('/login');
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
+    res.redirect('/login');
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.redirect('/login');
+  }
 });
 
 // ============= END AUTH ROUTES =============
