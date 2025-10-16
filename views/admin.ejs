@@ -636,63 +636,79 @@
                 <% if (bookings.length === 0) { %>
                     <p style="color: #666; text-align: center; padding: 20px;">No bookings yet</p>
                 <% } else { %>
-                    <% bookings.forEach(booking => { %>
-                        <div class="booking-item">
-                            <div style="display: flex; justify-content: space-between; align-items: start;">
-                                <div style="flex: 1;">
-                                    <div style="font-weight: bold; color: #333; margin-bottom: 5px;">
-                                        👤 <%= booking.client.name %>
-                                    </div>
-                                    <div style="color: #666; font-size: 0.9em; margin-bottom: 5px;">
-                                        📅 <%= new Date(booking.session.date).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %> at <%= booking.session.time %>
-                                    </div>
-                                    <div style="color: #666; font-size: 0.9em; margin-bottom: 5px;">
-                                        👨‍🏫 Trainer: <%= booking.session.trainer ? booking.session.trainer.name : 'No trainer assigned' %>
-                                    </div>
-                                    <div style="color: #666; font-size: 0.9em; margin-bottom: 5px;">
-                                        <span class="exercise-type <%= booking.session.exerciseType %>">
-                                            <%= booking.session.exerciseType === 'body-health' ? 'Body Health' : 'Regular Training' %>
-                                        </span>
-                                        👥 <%= booking.groupSize %> <%= booking.groupSize === 1 ? 'person' : 'people' %>
-                                    </div>
-                                    <div style="color: #666; font-size: 0.8em;">
-                                        📧 <%= booking.client.email %> | 📱 <%= booking.client.phone || 'No phone' %>
-                                    </div>
-                                    <% if (booking.isPackageBooking) { %>
-                                        <div style="background: #e8f4f8; padding: 4px 8px; border-radius: 4px; margin: 5px 0; font-size: 0.8em; color: #0c5460;">
-                                            📦 Package Booking - Session <%= booking.sessionNumber %>/8
-                                        </div>
-                                    <% } %>
-                                    <div class="cancellation-policy">
-                                        ⏰ Can cancel until: <%= new Date(booking.cancellationDeadline).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
-                                        <% if (new Date() > new Date(booking.cancellationDeadline)) { %>
-                                            <span style="color: #dc3545; font-weight: bold;">(Cancellation deadline passed)</span>
-                                        <% } %>
-                                    </div>
-                                </div>
-                                <div>
-                                    <button class="btn btn-danger" onclick="deleteBooking('<%= booking._id %>')">
-                                        🗑️ Cancel
-                                    </button>
-                                </div>
-                            </div>
-                            <!-- Notes Section -->
-                            <div class="notes-section">
-                                <label style="font-size: 0.9em; font-weight: bold; color: #333; margin-bottom: 5px; display: block;">Session Notes:</label>
-                                <textarea 
-                                    id="notes-<%= booking._id %>" 
-                                    class="notes-textarea" 
-                                    placeholder="Add notes about this client's session..."
-                                ><%= booking.notes || '' %></textarea>
-                                <div class="notes-controls">
-                                    <button class="save-notes-btn" onclick="saveBookingNotes('<%= booking._id %>')">
-                                        💾 Save Notes
-                                    </button>
-                                    <span id="notes-status-<%= booking._id %>" class="notes-saved" style="display: none;">✅ Saved!</span>
-                                </div>
-                            </div>
+                  <% bookings.forEach(booking => { %>
+    <% if (booking.client && booking.session) { %>
+        <div class="booking-item <%= new Date() > new Date(booking.cancellationDeadline) ? 'cannot-cancel' : '' %>">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <div style="font-weight: bold; color: #333; margin-bottom: 5px;">
+                        👤 <%= booking.client.name %>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em; margin-bottom: 5px;">
+                        📅 <%= new Date(booking.session.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) %> at <%= booking.session.time %>
+                    </div>
+                    <div style="color: #4CAF50; font-weight: bold; margin-bottom: 5px;">
+                        👨‍🏫 Trainer: <%= booking.session.trainer ? booking.session.trainer.name : 'No trainer assigned' %>
+                    </div>
+                    <div style="color: #666; margin-bottom: 5px;">
+                        <span class="exercise-type <%= booking.session.exerciseType %>">
+                            <%= booking.session.exerciseType === 'body-health' ? 'Body Health' : 'Regular Training' %>
+                        </span>
+                        👥 <%= booking.groupSize %> <%= booking.groupSize === 1 ? 'person' : 'people' %>
+                    </div>
+                    <% if (booking.session.description) { %>
+                        <div style="color: #666; font-size: 0.9em; margin-bottom: 5px;">
+                            <%= booking.session.description %>
                         </div>
-                    <% }); %>
+                    <% } %>
+                    <% if (booking.isPackageBooking) { %>
+                        <div class="package-info">
+                            📦 Package Booking - Session <%= booking.sessionNumber %>/8
+                        </div>
+                    <% } %>
+                    <div style="color: #666; font-size: 0.9em; margin: 8px 0;">
+                        ⏰ Cancellation deadline: <%= new Date(booking.cancellationDeadline).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                    </div>
+                    <% if (new Date() < new Date(booking.cancellationDeadline)) { %>
+                        <button class="btn btn-danger" style="margin-top: 10px;" onclick="deleteBooking('<%= booking._id %>')">
+                            🗑️ Cancel
+                        </button>
+                    <% } else { %>
+                        <div class="cancellation-warning" style="margin-top: 10px;">
+                            ⚠️ Cancellation deadline passed (24 hours before session)
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            
+            <!-- Notes Section -->
+            <div class="notes-section">
+                <label style="font-size: 0.9em; font-weight: bold; color: #333; margin-bottom: 5px; display: block;">Session Notes:</label>
+                <textarea 
+                    id="notes-<%= booking._id %>" 
+                    class="notes-textarea" 
+                    placeholder="Add notes about this client's session..."
+                ><%= booking.notes || '' %></textarea>
+                <div class="notes-controls">
+                    <button class="save-notes-btn" onclick="saveBookingNotes('<%= booking._id %>')">
+                        💾 Save Notes
+                    </button>
+                    <span id="notes-status-<%= booking._id %>" class="notes-saved" style="display: none;">✅ Saved!</span>
+                </div>
+            </div>
+        </div>
+    <% } else { %>
+        <!-- Orphaned booking - client or session was deleted -->
+        <div class="booking-item" style="opacity: 0.5; border-left-color: #dc3545;">
+            <div style="color: #dc3545; font-weight: bold;">
+                ⚠️ Deleted Booking (Client or Session removed)
+            </div>
+            <button class="btn btn-danger btn-small" onclick="deleteBooking('<%= booking._id %>')">
+                🗑️ Remove
+            </button>
+        </div>
+    <% } %>
+<% }); %>
                 <% } %>
             </div>
         </div>

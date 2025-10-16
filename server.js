@@ -440,7 +440,11 @@ app.get('/', requireAuth, async (req, res) => {
 app.get('/admin', requireAuth, requireAdmin, async (req, res) => {
   try {
     const sessions = await Session.find({}).populate(['createdBy', 'trainer']).sort({ date: 1, time: 1 });
-    const bookings = await Booking.find({ status: 'confirmed' }).populate([
+    const bookings = await Booking.find({ 
+      status: 'confirmed',
+      client: { $ne: null },
+      session: { $ne: null }
+        }).populate([
       { path: 'session', populate: { path: 'trainer' } },
       'client'
     ]).sort({ createdAt: -1 });
